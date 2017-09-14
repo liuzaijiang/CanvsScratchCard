@@ -1,0 +1,60 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+
+#blur-wrap{
+	position: relative;
+	width: 800px;
+	height: 600px;
+	margin: 0 auto;
+}
+
+#blur-img{
+	position: absolute;
+	filter: blur(15px);
+	left:0;
+	top:0;
+	z-index: 0;
+}
+
+
+#blur-canvas{
+	position: absolute;
+	left:0;
+	top:0;
+	z-index: 100;
+}
+
+#reset{
+	position: absolute;
+	left:200px;
+	bottom: -80px;
+	background: #1165cd;
+}
+
+#show{
+	position: absolute;
+	right:200px;
+	bottom: -80px;
+	background: #5d61cc;
+}
+
+#reset:hover,#show:hover{
+	background: #9861cc;
+}
+
+
+button{
+	width: 70px;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 10px;
+	border: none;
+	color: white;
+	outline: none;
+}
+
+button:hover{
+	cursor: pointer;
+}
