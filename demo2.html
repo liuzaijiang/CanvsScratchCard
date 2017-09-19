@@ -78,7 +78,7 @@ button:hover{
 <script>
 var canvasWidth = 320;
 var canvasHeight = 510;
-var canvasClipRaduis = 60;
+var canvasClipRaduis = 20;
 var c=document.getElementById("blur-canvas");
 var ctx=c.getContext("2d");
 c.width = canvasWidth;
@@ -90,13 +90,11 @@ var clipRegion = {
 	r: canvasClipRaduis
 };
 
-var img = new Image();
-img.src = 'image2.jpg'
-img.onload = function() {
-	draw(img, clipRegion);
-}
+$(function(){
+    draw();
+})
 
-function draw(img, clipRegion) {
+function draw() {
 	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.fillStyle = '#e4e4e4';
     ctx.rect( 0, 0, canvasWidth,canvasHeight);
@@ -113,12 +111,9 @@ $("#blur-canvas").mousedown(function(e) {
 	x = e.clientX - c.getBoundingClientRect().left;
 	y = e.clientY - c.getBoundingClientRect().top;
 	if (ctx.isPointInPath(x, y)) {
-		var disX = x - clipRegion.x;
-		var disY = y - clipRegion.y;
 		$("#blur-canvas").mousemove(function(e) {
 			clipRegion.x = e.clientX - c.getBoundingClientRect().left;
 			clipRegion.y = e.clientY - c.getBoundingClientRect().top;
-			clipRegion.r = 20;
             var imgData=ctx.getImageData(clipRegion.x-clipRegion.r,clipRegion.y-clipRegion.r,clipRegion.r*2,clipRegion.r*2);
 			for (var i=0;i<imgData.data.length;i+=8)
             {
@@ -134,7 +129,7 @@ $("#blur-canvas").mouseup(function(e) {
 })
 
 function reset(){
-    draw(img, clipRegion);
+    draw();
 }
 </script>
 </body>
