@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html>
+<style>
+*{
+	margin: 0;
+	padding: 0;
+}
+
+#blur-wrap{
+	position: relative;
+	width: 320px;
+	height: 520px;
+	margin:0 auto; 
+    top: 0; 
+    left: 0; 
+    bottom: 0; 
+    right: 0;.
+}
+
+#blur-img{
+	position: absolute;
+	left:0;
+	top:0;
+	z-index: 0;
+}
+
+
+#blur-canvas{
+	position: absolute;
+	left:0;
+	top:0;
+	z-index: 100;
+}
+
+#reset{
+	position: absolute;
+	left:120px;
+	bottom: -80px;
+	background: #1165cd;
+}
+
+#show{
+	position: absolute;
+	right:200px;
+	bottom: -80px;
+	background: #5d61cc;
+}
+
+#reset:hover,#show:hover{
+	background: #9861cc;
+}
+
+
+button{
+	width: 70px;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 10px;
+	border: none;
+	color: white;
+	outline: none;
+}
+
+button:hover{
+	cursor: pointer;
+}
+
+</style>
+<body>
+<div id="blur-wrap">
+    <img id="blur-img" src="image2.jpg">
+    <canvas id="blur-canvas">
+    Your browser does not support the HTML5 canvas tag.
+    </canvas>
+    <button id="reset" onclick="reset()">复原</button>
+</div>
+<script src="jquery.js"></script>
+<script>
+var canvasWidth = 320;
+var canvasHeight = 510;
+var canvasClipRaduis = 60;
+var c=document.getElementById("blur-canvas");
+var ctx=c.getContext("2d");
+c.width = canvasWidth;
+c.height = canvasHeight;
+
+var clipRegion = {
+	x: Math.floor(Math.random() * (canvasWidth - canvasClipRaduis * 2)) + canvasClipRaduis + 1,
+	y: Math.floor(Math.random() * (canvasHeight - canvasClipRaduis * 2)) + canvasClipRaduis + 1,
+	r: canvasClipRaduis
+};
+
+var img = new Image();
+img.src = 'image2.jpg'
+img.onload = function() {
+	draw(img, clipRegion);
+}
+
+function draw(img, clipRegion) {
+	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillStyle = '#e4e4e4';
+    ctx.rect( 0, 0, canvasWidth,canvasHeight);
+    ctx.fill();
+    var imgData=ctx.getImageData(0,0,canvasWidth,canvasHeight);
+    for (var i=0;i<imgData.data.length;i+=24)
+    {
+        imgData.data[i+3]=Math.ceil(Math.random()*250+1);
+    }
+    ctx.putImageData(imgData,0,0);
+}
+
+$("#blur-canvas").mousedown(function(e) {
+	x = e.clientX - c.getBoundingClientRect().left;
+	y = e.clientY - c.getBoundingClientRect().top;
+	if (ctx.isPointInPath(x, y)) {
+		var disX = x - clipRegion.x;
+		var disY = y - clipRegion.y;
+		$("#blur-canvas").mousemove(function(e) {
+			clipRegion.x = e.clientX - c.getBoundingClientRect().left;
+			clipRegion.y = e.clientY - c.getBoundingClientRect().top;
+			clipRegion.r = 20;
+            var imgData=ctx.getImageData(clipRegion.x-clipRegion.r,clipRegion.y-clipRegion.r,clipRegion.r*2,clipRegion.r*2);
+			for (var i=0;i<imgData.data.length;i+=8)
+            {
+                imgData.data[i+3]=0;
+            }
+            ctx.putImageData(imgData,clipRegion.x-clipRegion.r,clipRegion.y-clipRegion.r);
+		})
+	}
+})
+
+$("#blur-canvas").mouseup(function(e) {
+	$("#blur-canvas").unbind("mousemove");
+})
+
+function reset(){
+    draw(img, clipRegion);
+}
+</script>
+</body>
+</html>
